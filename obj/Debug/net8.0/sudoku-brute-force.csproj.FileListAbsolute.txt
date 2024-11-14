@@ -1,0 +1,15 @@
+/home/user/Desktop/Sudoku-brute-force/bin/Debug/net8.0/sudoku-brute-force
+/home/user/Desktop/Sudoku-brute-force/bin/Debug/net8.0/sudoku-brute-force.deps.json
+/home/user/Desktop/Sudoku-brute-force/bin/Debug/net8.0/sudoku-brute-force.runtimeconfig.json
+/home/user/Desktop/Sudoku-brute-force/bin/Debug/net8.0/sudoku-brute-force.dll
+/home/user/Desktop/Sudoku-brute-force/bin/Debug/net8.0/sudoku-brute-force.pdb
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.GeneratedMSBuildEditorConfig.editorconfig
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.AssemblyInfoInputs.cache
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.AssemblyInfo.cs
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.csproj.CoreCompileInputs.cache
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.sourcelink.json
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.dll
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/refint/sudoku-brute-force.dll
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.pdb
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.genruntimeconfig.cache
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/ref/sudoku-brute-force.dll

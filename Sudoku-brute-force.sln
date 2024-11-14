@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sudoku-brute-force", "sudoku-brute-force.csproj", "{ECF535AA-E908-4477-AED8-55329035E635}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECF535AA-E908-4477-AED8-55329035E635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECF535AA-E908-4477-AED8-55329035E635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECF535AA-E908-4477-AED8-55329035E635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECF535AA-E908-4477-AED8-55329035E635}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9ED40AA-40B7-414E-B8E6-09CDA3A67806}
+	EndGlobalSection
+EndGlobal
