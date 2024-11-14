@@ -13,3 +13,6 @@
 /home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.pdb
 /home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.genruntimeconfig.cache
 /home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/ref/sudoku-brute-force.dll
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-brute-force.csproj.AssemblyReference.cache
+/home/user/Desktop/Sudoku-brute-force/bin/Debug/net8.0/Newtonsoft.Json.dll
+/home/user/Desktop/Sudoku-brute-force/obj/Debug/net8.0/sudoku-b.E3D4A1FD.Up2Date
