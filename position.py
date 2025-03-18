@@ -1,4 +1,4 @@
 class Position:
-    def __init__(self, x, y):
-        self.x = x - 1
-        self.y = y - 1
+    def __init__(self, X, Y):
+        self.X = X - 1
+        self.Y = Y - 1

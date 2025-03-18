@@ -1,21 +1,29 @@
 import time
-from collections import deque
-from grid import Grid
+import json
 from colorama import Fore, Style
+from grid import Grid
+from position import Position
 
 class Game:
     def __init__(self):
         try:
-            print(Fore.YELLOW + "Initializing Sudoku Solver...\n" + Style.RESET_ALL)
             self.grid = self.load_grid()
+
             self.grid.display()
             time.sleep(1)
-            solved = self.solve(self.grid, 0.1)
 
-            if solved:
-                print(Fore.GREEN + "\nSolved Successfully!" + Style.RESET_ALL)
+            print("\nPress any key to start solving...")
+            input()
+
+            self.grid.display()
+            time.sleep(1)
+
+            if self.solve(self.grid):
+                print(Fore.GREEN + "\nSudoku Solved Successfully!" + Style.RESET_ALL)
             else:
                 print(Fore.RED + "\nFailed to solve Sudoku!" + Style.RESET_ALL)
+
+            self.grid.display(True, True)
 
         except Exception as e:
             print(Fore.RED + f"\nAn error occurred: {e}" + Style.RESET_ALL)
@@ -32,29 +40,26 @@ class Game:
             [ 1, 2, 0, 0, 0, 0, 8, 0, 7 ],
             [ 0, 5, 6, 8, 7, 2, 0, 0, 9 ],
             [ 4, 0, 0, 5, 0, 1, 6, 2, 0 ]
-        ]
-        """
-        return Grid(json_grid)
+        ]"""
 
-    def solve(self, grid, sleep=0):
-        skipped_regions = deque()
+        return Grid(json.loads(json_grid))
 
-        for region_row in range(3):
-            for region_col in range(3):
-                if not self.solve_region(grid, region_row, region_col, sleep):
-                    skipped_regions.append((region_row, region_col))
+    def solve(self, grid):
+        empty_pos = grid.get_unused_notes()
+        if not empty_pos:
+            return True
 
-        return not skipped_regions
+        row, col = empty_pos
 
-    def solve_region(self, grid, region_row, region_col, sleep):
-        unused_positions = grid.get_unused_positions(region_row, region_col)
+        for num in range(1, 10):
+            if grid.is_valid_move(row, col, num):
+                grid.add(num, Position(col + 1, row + 1))
+                grid.display()
+                time.sleep(0.2)
 
-        for pos in unused_positions:
-            for num in range(1, 10):
-                if num not in grid.get_used_notes(pos):
-                    grid.add(num, pos)
-                    grid.display()
-                    time.sleep(sleep)
+                if self.solve(grid):
                     return True
+
+                grid.revert_transaction()
 
         return False
