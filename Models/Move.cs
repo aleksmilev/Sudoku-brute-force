@@ -1,6 +1,6 @@
 namespace SudokuBruteForce.Models
 {
-    class Move
+    public class Move
     {
         public int value;
         public Position position;

@@ -2,9 +2,9 @@ using SudokuBruteForce.Models;
 
 namespace SudokuBruteForce.Core
 {
-    class Game
+    public class Game
     {
-        public Grid LoadGrid()
+        private Grid LoadGrid()
         {
             string jsonGrid = @"
             [
@@ -48,7 +48,7 @@ namespace SudokuBruteForce.Core
             Console.WriteLine();
         }
 
-        public bool Solve(Grid grid, int sleep = 0)
+        private bool Solve(Grid grid, int sleep = 0)
         {
             Position[] unusedPositions = grid.GetUnusedNotes();
             if (unusedPositions.Length == 0)

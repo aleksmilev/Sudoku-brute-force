@@ -1,11 +1,11 @@
 namespace SudokuBruteForce.Models
 {
-    class Note
+    public class Note
     {
         public int value;
         public string type;
 
-        public static Dictionary<string, ConsoleColor> TypesToColors = new Dictionary<string, ConsoleColor>
+        public static readonly Dictionary<string, ConsoleColor> TypesToColors = new Dictionary<string, ConsoleColor>
         {
             {"static", ConsoleColor.White},
             {"null", ConsoleColor.Green},

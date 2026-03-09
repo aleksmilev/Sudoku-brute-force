@@ -2,19 +2,25 @@ using Newtonsoft.Json;
 
 namespace SudokuBruteForce.Models
 {
-    class Grid
+    public class Grid
     {
-        public static int MaxSum = 45;
+        public string Name;
+        public string Difficulty;
+        
+        public const int MaxSum = 45;
         public Stack<List<Move>> Transactions = new Stack<List<Move>>();
-        public List<List<Note>> grid;
+        private List<List<Note>> grid;
 
-        public Grid(string gridJson)
+        public Grid(string gridJson, string name = "Default", string difficulty = "Easy")
         {
             this.grid = ConvertToNoteGrid(JsonConvert.DeserializeObject<List<List<int>>>(gridJson) ?? new List<List<int>>());
             this.Transactions.Push(new List<Move>());
+
+            this.Name = name;
+            this.Difficulty = difficulty;
         }
 
-        public static List<List<Note>> ConvertToNoteGrid(List<List<int>> grid)
+        private static List<List<Note>> ConvertToNoteGrid(List<List<int>> grid)
         {
             List<List<Note>> noteGrid = new List<List<Note>>();
 
@@ -104,7 +110,7 @@ namespace SudokuBruteForce.Models
             moves.Clear();
         }
 
-        public void CommitTransaction()
+        private void CommitTransaction()
         {
             if (this.Transactions.Count == 0)
                 return;
@@ -135,7 +141,7 @@ namespace SudokuBruteForce.Models
             this.Transactions.Push(new List<Move>());
         }
 
-        public static bool Compare(Grid grid1, Grid grid2)
+        private static bool Compare(Grid grid1, Grid grid2)
         {
             for (int i = 0; i < grid1.grid.Count; i++)
             {
