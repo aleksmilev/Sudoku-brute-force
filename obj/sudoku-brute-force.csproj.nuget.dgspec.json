@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/user/Desktop/Sudoku-brute-force/sudoku-brute-force.csproj": {}
+    "/home/code/Desktop/Sudoku-brute-force/sudoku-brute-force.csproj": {}
   },
   "projects": {
-    "/home/user/Desktop/Sudoku-brute-force/sudoku-brute-force.csproj": {
+    "/home/code/Desktop/Sudoku-brute-force/sudoku-brute-force.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/user/Desktop/Sudoku-brute-force/sudoku-brute-force.csproj",
+        "projectUniqueName": "/home/code/Desktop/Sudoku-brute-force/sudoku-brute-force.csproj",
         "projectName": "sudoku-brute-force",
-        "projectPath": "/home/user/Desktop/Sudoku-brute-force/sudoku-brute-force.csproj",
-        "packagesPath": "/home/user/.nuget/packages/",
-        "outputPath": "/home/user/Desktop/Sudoku-brute-force/obj/",
+        "projectPath": "/home/code/Desktop/Sudoku-brute-force/sudoku-brute-force.csproj",
+        "packagesPath": "/home/code/.nuget/packages/",
+        "outputPath": "/home/code/Desktop/Sudoku-brute-force/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/user/.nuget/NuGet/NuGet.Config"
+          "/home/code/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,11 +32,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -64,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/user/.dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.124/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

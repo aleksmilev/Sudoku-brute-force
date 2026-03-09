@@ -16,8 +16,6 @@ namespace SudokuBruteForce
     {
         public Grid LoadGrid()
         {
-            // TODO Get Grid Form API
-
             string jsonGrid = @"
             [
                 [ 5, 6, 1, 0, 4, 0, 7, 0, 0 ],
@@ -30,19 +28,6 @@ namespace SudokuBruteForce
                 [ 0, 5, 6, 8, 7, 2, 0, 0, 9 ],
                 [ 4, 0, 0, 5, 0, 1, 6, 2, 0 ]
             ]";
-
-            // jsonGrid = @"
-            // [
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-            //     [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
-            // ]";
 
             Grid grid = new Grid(jsonGrid);
 
@@ -62,79 +47,49 @@ namespace SudokuBruteForce
             grid.Display();
             Thread.Sleep(1000);
 
-            this.Solve(grid, 1000);
+            bool solved = this.Solve(grid, 100);
+            
+            if (solved)
+            {
+                grid.CommitAllTransactions();
+                grid.Display();
+            }
 
             Console.WriteLine();
         }
 
         public bool Solve(Grid grid, int sleep = 0)
         {
-            Queue<(int RegionRow, int RegionCol)> skippedRegions = new Queue<(int, int)>();
+            Position[] unusedPositions = grid.GetUnusedNotes();
+            if (unusedPositions.Length == 0)
+                return true;
 
-            for (int regionRow = 0; regionRow < 3; regionRow++)
+            Position nextPos = unusedPositions[0];
+
+            grid.Transactions.Push(new List<Move>());
+
+            for (int num = 1; num <= 9; num++)
             {
-                for (int regionCol = 0; regionCol < 3; regionCol++)
+                int[] sums = grid.GetSumsForNote(nextPos, num);
+                int[] usedNotes = grid.GetUsedNotes(nextPos);
+
+                if (!usedNotes.Contains(num) && !sums.Any(sum => sum > Grid.MaxSum))
                 {
-                    if (!SolveRegion(grid, regionRow, regionCol, sleep, out bool solvedRegion))
+                    grid.Add(num, nextPos);
+                    grid.Display();
+                    Thread.Sleep(sleep);
+
+                    if (Solve(grid, sleep))
                     {
-                        skippedRegions.Enqueue((regionRow, regionCol));
+                        return true;
                     }
+
+                    grid.RevertTransaction();
                 }
             }
 
-            while (skippedRegions.Count > 0)
-            {
-                var (regionRow, regionCol) = skippedRegions.Dequeue();
-
-                if (!SolveRegion(grid, regionRow, regionCol, sleep, out bool solvedRegion))
-                {
-                    skippedRegions.Enqueue((regionRow, regionCol));
-                }
-
-                if (skippedRegions.Count == 9)
-                    return false;
-            }
-
-            return grid.GetUnusedNotes().Length == 0;
-        }
-
-        public bool SolveRegion(Grid grid, int regionRow, int regionCol, int sleep, out bool solvedRegion)
-        {
-            Position[] unusedPositions = grid.GetUnusedNotes(regionRow, regionCol);
-            int failCount = 0;
-
-            foreach (Position pos in unusedPositions)
-            {
-                for (int num = 1; num <= 9; num++)
-                {
-                    int[] sums = grid.GetSumsForNote(pos, num);
-                    int[] usedNotes = grid.GetUsedNotes(pos);
-
-                    if (!usedNotes.Contains(num))
-                    {
-                        grid.Add(num, pos);
-                        grid.Display();
-                        Thread.Sleep(sleep);
-
-                        if (Solve(grid, sleep))
-                        {
-                            solvedRegion = true;
-                            return true;
-                        }
-
-                        grid.RevertTransaction();
-                        failCount++;
-
-                        if (failCount >= unusedPositions.Length)
-                        {
-                            solvedRegion = false;
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            solvedRegion = false;
+            if (grid.Transactions.Count > 0)
+                grid.Transactions.Pop();
             return false;
         }
 
@@ -209,42 +164,68 @@ namespace SudokuBruteForce
             if (this.grid[position.Y][position.X].value != 0)
                 return;
 
-            int[] sums =  this.GetSumsForNote(position, value);
+            int[] sums = this.GetSumsForNote(position, value);
             int[] usedNotes = this.GetUsedNotes(position);
+
+            if (sums.Any(sum => sum > Grid.MaxSum) || usedNotes.Contains(value))
+                return;
+
+            if (this.Transactions.Count == 0)
+                this.Transactions.Push(new List<Move>());
 
             this.grid[position.Y][position.X].ChangeValue(value, sums, usedNotes);   
             this.Transactions.Peek().Add(new Move(value, position));
-
-            if (sums.Any(sum => sum > Grid.MaxSum) || usedNotes.Contains(value))
-                this.RevertTransaction();
-
-            if (sums.Sum() == Grid.MaxSum * 3)
-                this.CommitTransaction();
-            
-
         }
 
-        // TODO Fix the RevertTransaction condition
         public void RevertTransaction()
         {
+            if (this.Transactions.Count == 0)
+                return;
+
             List<Move> moves = this.Transactions.Peek();
 
-            foreach (Move move in moves)
-                this.grid[move.position.Y][move.position.X].Reset();
+            int moveCount = moves.Count;
+            for (int i = moveCount - 1; i >= 0; i--)
+            {
+                Move move = moves[i];
+                if (this.grid[move.position.Y][move.position.X].type != "inserted" && 
+                    this.grid[move.position.Y][move.position.X].type != "static")
+                {
+                    this.grid[move.position.Y][move.position.X].Reset();
+                }
+            }
 
-            this.Transactions.Pop();
-
-            if (this.Transactions.Count == 0) 
-                this.Transactions.Push(new List<Move>());
+            moves.Clear();
         }
 
         public void CommitTransaction()
         {
+            if (this.Transactions.Count == 0)
+                return;
+
             List<Move> moves = this.Transactions.Peek();
 
             foreach (Move move in moves)
                 this.grid[move.position.Y][move.position.X].SetAsInserted();
 
+            moves.Clear();
+        }
+
+        public void CommitAllTransactions()
+        {
+            while (this.Transactions.Count > 0)
+            {
+                List<Move> moves = this.Transactions.Pop();
+                
+                foreach (Move move in moves)
+                {
+                    if (this.grid[move.position.Y][move.position.X].type != "static")
+                    {
+                        this.grid[move.position.Y][move.position.X].SetAsInserted();
+                    }
+                }
+            }
+            
             this.Transactions.Push(new List<Move>());
         }
 
@@ -265,9 +246,9 @@ namespace SudokuBruteForce
 
         public int[] GetSumsForNote(Position position, int value)
         {
-            int rowSum = value;
-            int colSum = value;
-            int regionSum = value;
+            int rowSum = 0;
+            int colSum = 0;
+            int regionSum = 0;
 
             int gridSize = this.grid.Count;
             int regionStartRow = (position.Y / 3) * 3;
@@ -282,6 +263,11 @@ namespace SudokuBruteForce
             for (int i = regionStartRow; i < regionStartRow + 3; i++)
                 for (int j = regionStartCol; j < regionStartCol + 3; j++)
                     regionSum += this.grid[i][j].value;
+
+            int currentValue = this.grid[position.Y][position.X].value;
+            rowSum = rowSum - currentValue + value;
+            colSum = colSum - currentValue + value;
+            regionSum = regionSum - currentValue + value;
 
             return new int[] { rowSum, colSum, regionSum };
         }
@@ -311,17 +297,27 @@ namespace SudokuBruteForce
             return usedNoes.ToArray();
         }
 
-        public Position[] GetUnusedNotes(int regionRow = 0, int regionCol = 0)
+        public Position[] GetUnusedNotes(int? regionRow = null, int? regionCol = null)
         {
             List<Position> unusedNotes = new List<Position>();
 
-            int startRow = regionRow * 3;
-            int startCol = regionCol * 3;
+            if (regionRow.HasValue && regionCol.HasValue)
+            {
+                int startRow = regionRow.Value * 3;
+                int startCol = regionCol.Value * 3;
 
-            for (int i = startRow; i < startRow + 3; i++)
-                for (int j = startCol; j < startCol + 3; j++)
-                    if (this.grid[i][j].value == 0)
-                        unusedNotes.Add(new Position(j + 1, i + 1));
+                for (int i = startRow; i < startRow + 3; i++)
+                    for (int j = startCol; j < startCol + 3; j++)
+                        if (this.grid[i][j].value == 0)
+                            unusedNotes.Add(new Position(j + 1, i + 1));
+            }
+            else
+            {
+                for (int i = 0; i < this.grid.Count; i++)
+                    for (int j = 0; j < this.grid[i].Count; j++)
+                        if (this.grid[i][j].value == 0)
+                            unusedNotes.Add(new Position(j + 1, i + 1));
+            }
 
             return unusedNotes.ToArray();
         }
@@ -376,12 +372,20 @@ namespace SudokuBruteForce
 
             this.value = value;
 
-            if (sums.Any(sum => sum < Grid.MaxSum))
-                this.type = "temp";
-            else
+            if (sums.Any(sum => sum > Grid.MaxSum))
             {
                 this.type = "null";
                 this.value = 0;
+                return;
+            }
+
+            if (sums.All(sum => sum == Grid.MaxSum))
+            {
+                this.type = "temp";
+            }
+            else if (sums.Any(sum => sum < Grid.MaxSum))
+            {
+                this.type = "temp";
             }
         }
 

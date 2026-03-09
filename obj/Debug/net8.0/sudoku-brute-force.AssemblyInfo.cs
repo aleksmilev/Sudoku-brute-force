@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("sudoku-brute-force")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b531d08b487aafdbdd958acc39f7cf2e496643f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f325730661665dad1a181575c31b0ba26ace0f17")]
 [assembly: System.Reflection.AssemblyProductAttribute("sudoku-brute-force")]
 [assembly: System.Reflection.AssemblyTitleAttribute("sudoku-brute-force")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
