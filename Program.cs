@@ -7,8 +7,7 @@ namespace SudokuBruteForce
         static void Main(string[] args)
         {
             Console.Clear();
-
-            new Game();
+            new Menu();
         }
     }
 }

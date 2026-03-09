@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using SudokuBruteForce.Core;
 
 namespace SudokuBruteForce.Models
 {
@@ -18,6 +19,8 @@ namespace SudokuBruteForce.Models
 
             this.Name = name;
             this.Difficulty = difficulty;
+
+            GridCollection.AddGrid(this);
         }
 
         private static List<List<Note>> ConvertToNoteGrid(List<List<int>> grid)

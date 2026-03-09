@@ -4,37 +4,14 @@ namespace SudokuBruteForce.Core
 {
     public class Game
     {
-        private Grid LoadGrid()
+        public Game(Grid grid)
         {
-            string jsonGrid = @"
-            [
-                [ 5, 6, 1, 0, 4, 0, 7, 0, 0 ],
-                [ 0, 9, 0, 0, 2, 0, 1, 0, 8 ],
-                [ 0, 0, 0, 0, 0, 0, 0, 6, 0 ],
-                [ 8, 0, 0, 2, 0, 6, 0, 0, 0 ],
-                [ 6, 0, 0, 1, 0, 9, 2, 0, 4 ],
-                [ 9, 0, 2, 7, 0, 4, 5, 0, 6 ],
-                [ 1, 2, 0, 0, 0, 0, 8, 0, 7 ],
-                [ 0, 5, 6, 8, 7, 2, 0, 0, 9 ],
-                [ 4, 0, 0, 5, 0, 1, 6, 2, 0 ]
-            ]";
-
-            Grid grid = new Grid(jsonGrid);
-
             grid.Display();
 
             Console.WriteLine();
             Console.Write("Press any key to start:");
             Console.Read();
 
-            return grid;
-        }
-
-        public Game()
-        {
-            Grid grid = this.LoadGrid();
-
-            grid.Display();
             Thread.Sleep(1000);
 
             bool solved = this.Solve(grid, 100);
