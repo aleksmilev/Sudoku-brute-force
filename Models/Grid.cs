@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using SudokuBruteForce.Core;
 
 namespace SudokuBruteForce.Models
 {

@@ -1,6 +1,6 @@
 using SudokuBruteForce.Models;
 
-namespace SudokuBruteForce.Core
+namespace SudokuBruteForce.Models
 {
     public static class GridCollection
     {
@@ -22,4 +22,5 @@ namespace SudokuBruteForce.Core
         }
     }
 }
+
 

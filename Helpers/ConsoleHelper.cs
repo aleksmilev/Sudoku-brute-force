@@ -1,4 +1,3 @@
-using SudokuBruteForce.Core;
 using SudokuBruteForce.Models;
 
 namespace SudokuBruteForce.Helpers
