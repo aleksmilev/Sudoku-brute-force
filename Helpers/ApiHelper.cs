@@ -8,22 +8,37 @@ namespace SudokuBruteForce.Helpers
     public class ApiHelper
     {
         private static readonly HttpClient httpClient = new HttpClient();
-        private const string SudokuApiBaseUrl = "https://sudoku-api.vercel.app/api/dosuku";
-
         public static async Task<Grid?> GetRandomGrid(string difficulty = "easy")
         {
             try
             {
-                HttpResponseMessage response = await httpClient.GetAsync($"{SudokuApiBaseUrl}?query=newboard(boardsize:9, diff:{difficulty})");
-                
+                string difficultyParam = difficulty.ToLower();
+                if (difficultyParam != "easy" && difficultyParam != "medium" && difficultyParam != "hard")
+                    difficultyParam = "easy";
+
+                string endpoint = $"https://sugoku.onrender.com/board?difficulty={difficultyParam}";
+
+                HttpResponseMessage response = await httpClient.GetAsync(endpoint);
+
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"Failed to fetch grid from API. Status: {response.StatusCode}");
                     return null;
                 }
 
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                return ParseApiResponse(jsonResponse, difficulty);
+                string jsonResponse = await response.Content.ReadAsStringAsync();                
+                if (string.IsNullOrWhiteSpace(jsonResponse))
+                {
+                    Console.WriteLine("Failed to fetch grid from API. Empty response.");
+                    return null;
+                }
+
+                Grid? gridFromApi = ParseApiResponse(jsonResponse, difficulty);
+                if (gridFromApi == null)
+                {
+                    Console.WriteLine("Failed to parse grid from API response.");
+                }
+                return gridFromApi;
             }
             catch (Exception ex)
             {
@@ -50,48 +65,34 @@ namespace SudokuBruteForce.Helpers
             try
             {
                 JObject root = JObject.Parse(jsonResponse);
-                JToken? newboard = root["newboard"];
-                
-                if (newboard != null)
+                JToken? board = root["board"];
+                if (board != null && board.Type == JTokenType.Array)
                 {
-                    JToken? grids = newboard["grids"];
-                    if (grids != null && grids.Type == JTokenType.Array && grids.HasValues)
+                    List<List<int>> gridData = new List<List<int>>();
+                    foreach (JToken row in board)
                     {
-                        JToken? grid = grids[0];
-                        if (grid != null)
+                        if (row.Type == JTokenType.Array)
                         {
-                            JToken? valueArray = grid["value"];
-                            if (valueArray != null && valueArray.Type == JTokenType.Array)
+                            List<int> rowData = new List<int>();
+                            foreach (JToken cell in row)
                             {
-                                List<List<int>> gridData = new List<List<int>>();
-                                
-                                foreach (JToken row in valueArray)
-                                {
-                                    if (row.Type == JTokenType.Array)
-                                    {
-                                        List<int> rowData = new List<int>();
-                                        foreach (JToken cell in row)
-                                        {
-                                            rowData.Add(cell.Value<int>());
-                                        }
-                                        gridData.Add(rowData);
-                                    }
-                                }
-                                
-                                string gridJson = Newtonsoft.Json.JsonConvert.SerializeObject(gridData);
-                                string name = grid["difficulty"]?.ToString() ?? "Unknown";
-                                
-                                return new Grid(gridJson, name, CapitalizeFirst(difficulty));
+                                rowData.Add(cell.Value<int>());
                             }
+                            gridData.Add(rowData);
                         }
                     }
+
+                    if (gridData.Count > 0 && gridData[0].Count > 0)
+                    {
+                        string gridJson = Newtonsoft.Json.JsonConvert.SerializeObject(gridData);
+                        return new Grid(gridJson, "API Generated", CapitalizeFirst(difficulty));
+                    }
                 }
-                
+
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"Error parsing API response: {ex.Message}");
                 return null;
             }
         }
@@ -104,22 +105,55 @@ namespace SudokuBruteForce.Helpers
             return char.ToUpper(str[0]) + str.Substring(1).ToLower();
         }
 
-        public static Grid GetDefaultGrid()
+        public static List<Grid> GetDefaultGrid()
         {
-            string jsonGrid = @"
+
+            List<Grid> grids = new List<Grid>();
+
+            string jsonGridEasy = @"
             [
-                [ 5, 6, 1, 0, 4, 0, 7, 0, 0 ],
-                [ 0, 9, 0, 0, 2, 0, 1, 0, 8 ],
-                [ 0, 0, 0, 0, 0, 0, 0, 6, 0 ],
-                [ 8, 0, 0, 2, 0, 6, 0, 0, 0 ],
-                [ 6, 0, 0, 1, 0, 9, 2, 0, 4 ],
-                [ 9, 0, 2, 7, 0, 4, 5, 0, 6 ],
-                [ 1, 2, 0, 0, 0, 0, 8, 0, 7 ],
-                [ 0, 5, 6, 8, 7, 2, 0, 0, 9 ],
-                [ 4, 0, 0, 5, 0, 1, 6, 2, 0 ]
+                [ 0, 0, 0, 1, 7, 0, 4, 0, 0 ],
+                [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                [ 0, 0, 7, 0, 0, 9, 1, 0, 0 ],
+                [ 3, 0, 2, 5, 0, 7, 6, 0, 0 ],
+                [ 4, 5, 0, 0, 0, 0, 0, 1, 0 ],
+                [ 7, 0, 0, 0, 1, 2, 0, 4, 0 ],
+                [ 0, 0, 1, 8, 0, 0, 9, 0, 4 ],
+                [ 0, 7, 3, 9, 2, 4, 0, 6, 1 ],
+                [ 0, 4, 0, 0, 6, 1, 0, 3, 2 ]
             ]";
 
-            return new Grid(jsonGrid, "Default", "Easy");
+            string jsonGridMedium = @"
+            [
+                [ 4, 0, 0, 0, 0, 0, 0, 0, 3 ],
+                [ 0, 0, 5, 0, 4, 0, 0, 0, 0 ],
+                [ 0, 0, 0, 3, 0, 8, 1, 0, 0 ],
+                [ 0, 2, 0, 0, 0, 0, 0, 0, 0 ],
+                [ 5, 4, 0, 0, 8, 0, 2, 0, 0 ],
+                [ 0, 0, 7, 2, 0, 3, 0, 5, 0 ],
+                [ 3, 0, 0, 0, 7, 2, 0, 0, 8 ],
+                [ 0, 6, 2, 0, 0, 0, 3, 1, 0 ],
+                [ 0, 0, 4, 5, 3, 1, 0, 7, 0 ]
+            ]";
+
+            string jsonGridHard = @"
+            [
+                [ 0, 0, 6, 8, 0, 0, 0, 0, 0 ],
+                [ 1, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                [ 0, 8, 0, 0, 0, 6, 0, 0, 0 ],
+                [ 0, 1, 0, 0, 0, 0, 7, 0, 0 ],
+                [ 0, 5, 7, 0, 0, 0, 3, 0, 0 ],
+                [ 0, 0, 0, 7, 0, 0, 0, 0, 1 ],
+                [ 0, 0, 0, 0, 7, 0, 9, 0, 0 ],
+                [ 8, 6, 0, 9, 0, 4, 5, 0, 0 ],
+                [ 9, 7, 5, 6, 1, 2, 8, 4, 0 ]
+            ]";
+
+            grids.Add(new Grid(jsonGridEasy, "Default 1", "Easy", false));
+            grids.Add(new Grid(jsonGridMedium, "Default 2", "Medium", false));
+            grids.Add(new Grid(jsonGridHard, "Default 3", "Hard", false));
+
+            return grids;
         }
     }
 }

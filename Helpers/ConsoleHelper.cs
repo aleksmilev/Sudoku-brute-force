@@ -5,7 +5,7 @@ namespace SudokuBruteForce.Helpers
 {
     public static class ConsoleHelper
     {
-        public static int SelectItem(List<string> items, string title)
+        public static int SelectItem(List<string> items, string title, Action? displayPreviousAction = null)
         {
             if (items.Count == 0)
             {
@@ -18,6 +18,13 @@ namespace SudokuBruteForce.Helpers
             do
             {
                 Console.Clear();
+
+                if (displayPreviousAction != null)
+                {
+                    displayPreviousAction();
+                    Console.WriteLine();
+                }
+
                 Console.WriteLine(title);
                 Console.WriteLine();
 
@@ -95,6 +102,51 @@ namespace SudokuBruteForce.Helpers
             };
 
             return SelectItem(options, "Select an option:");
+        }
+
+        public static int SelectDifficulty()
+        {
+            List<string> difficulties = new List<string>
+            {
+                "Easy",
+                "Medium",
+                "Hard"
+            };
+
+            return SelectItem(difficulties, "Select difficulty:");
+        }
+
+        public static bool SelectYesNo(string question, Action? displayPreviousAction = null)
+        {
+            List<string> options = new List<string>
+            {
+                "Yes",
+                "No"
+            };
+
+            int selectedIndex = SelectItem(options, question, displayPreviousAction);
+            return selectedIndex == 0;
+        }
+
+        public static bool SelectYesNoInline(string question)
+        {
+            Console.WriteLine();
+            Console.WriteLine(question + " (Y/N)");
+
+            while (true)
+            {
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                if (keyInfo.Key == ConsoleKey.Y)
+                {
+                    Console.WriteLine("Y");
+                    return true;
+                }
+                if (keyInfo.Key == ConsoleKey.N)
+                {
+                    Console.WriteLine("N");
+                    return false;
+                }
+            }
         }
     }
 }

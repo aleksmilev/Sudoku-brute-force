@@ -12,7 +12,7 @@ namespace SudokuBruteForce.Models
         public Stack<List<Move>> Transactions = new Stack<List<Move>>();
         private List<List<Note>> grid;
 
-        public Grid(string gridJson, string name = "Default", string difficulty = "Easy")
+        public Grid(string gridJson, string name = "Default", string difficulty = "Easy", bool isTemporary = true)
         {
             this.grid = ConvertToNoteGrid(JsonConvert.DeserializeObject<List<List<int>>>(gridJson) ?? new List<List<int>>());
             this.Transactions.Push(new List<Move>());
@@ -20,7 +20,38 @@ namespace SudokuBruteForce.Models
             this.Name = name;
             this.Difficulty = difficulty;
 
+            if (!isTemporary)
+                GridCollection.AddGrid(this);
+        }
+
+        public void Save()
+        {
             GridCollection.AddGrid(this);
+        }
+
+        public Grid Clone(string? name = null, string? difficulty = null)
+        {
+            List<List<int>> gridData = new List<List<int>>();
+
+            for (int i = 0; i < this.grid.Count; i++)
+            {
+                List<int> row = new List<int>();
+                for (int j = 0; j < this.grid[i].Count; j++)
+                {
+                    Note note = this.grid[i][j];
+                    int value = note.type == "static" ? note.value : 0;
+                    row.Add(value);
+                }
+                gridData.Add(row);
+            }
+
+            string gridJson = JsonConvert.SerializeObject(gridData);
+            return new Grid(
+                gridJson,
+                name ?? this.Name,
+                difficulty ?? this.Difficulty,
+                isTemporary: true
+            );
         }
 
         private static List<List<Note>> ConvertToNoteGrid(List<List<int>> grid)
