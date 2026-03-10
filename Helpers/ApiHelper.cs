@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SudokuBruteForce.Models;
 
-namespace SudokuBruteForce.Core
+namespace SudokuBruteForce.Helpers
 {
-    public class Api
+    public class ApiHelper
     {
         private static readonly HttpClient httpClient = new HttpClient();
         private const string SudokuApiBaseUrl = "https://sudoku-api.vercel.app/api/dosuku";

@@ -1,4 +1,5 @@
 using SudokuBruteForce.Models;
+using SudokuBruteForce.Helpers;
 
 namespace SudokuBruteForce.Core
 {
@@ -6,15 +7,51 @@ namespace SudokuBruteForce.Core
     {
         public Menu()
         {
-            Api.GetDefaultGrid();
-            this.newGame();
+            ApiHelper.GetDefaultGrid();
+            this.SelectOption();
         }
 
-        private void newGame()
+        private void SelectOption()
+        {
+            int choice = ConsoleHelper.SelectMenuOption();
+
+            switch (choice)
+            {
+                case 0:
+                    this.generateGame();
+                    break;
+                case 1:
+                    this.startGame();
+                    break;
+                case 2:
+                default:
+                    Environment.Exit(0);
+                    break;
+            }
+
+            this.SelectOption();
+        }
+
+        private void startGame()
+        {
+            Grid? selectedGrid = ConsoleHelper.SelectGrid();
+
+            if (selectedGrid == null)
+            {
+                return;
+            }
+
+            new Game(selectedGrid);
+            
+            Console.WriteLine("The game has been completed.");
+            Console.WriteLine("Press any key to return to the menu...");
+            Console.ReadKey();
+        }
+
+        private void generateGame()
         {
             Console.Clear();
-            Grid grid = GridCollection.GetGrid("Default");
-            new Game(grid);
+            this.SelectOption();
         }
     }
 }

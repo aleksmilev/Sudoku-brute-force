@@ -14,7 +14,7 @@ namespace SudokuBruteForce.Core
 
             Thread.Sleep(1000);
 
-            bool solved = this.Solve(grid, 100);
+            bool solved = this.Solve(grid, 10);
             
             if (solved)
             {
