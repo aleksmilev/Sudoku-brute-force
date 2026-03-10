@@ -95,8 +95,8 @@ namespace SudokuBruteForce.Helpers
         {
             List<string> options = new List<string>
             {
-                "Generate Game",
                 "Start Game",
+                "Generate Game",
                 "Exit"
             };
 

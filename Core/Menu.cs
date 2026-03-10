@@ -20,10 +20,10 @@ namespace SudokuBruteForce.Core
             switch (choice)
             {
                 case 0:
-                    this.generateGame();
+                    this.startGame();
                     break;
                 case 1:
-                    this.startGame();
+                    this.generateGame();                    
                     break;
                 case 2:
                 default:
