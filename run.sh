@@ -1,4 +1,4 @@
 #!/bin/bash
 
 dotnet build
-xterm -e "dotnet run"
+xterm -T "Sudoku Brute Force" -e "dotnet run"
